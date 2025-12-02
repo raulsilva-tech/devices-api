@@ -1,0 +1,11 @@
+package domain
+
+import "errors"
+
+var (
+	ErrInvalidState    = errors.New("invalid state")
+	ErrStateIsRequired = errors.New("state is required")
+	ErrIDIsRequired    = errors.New("id is required")
+	ErrBrandIsRequired = errors.New("brand is required")
+	ErrNameIsRequired  = errors.New("name is required")
+)
