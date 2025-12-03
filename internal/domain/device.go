@@ -1,6 +1,11 @@
 package domain
 
-import "time"
+import (
+	"context"
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type DeviceState string
 
@@ -14,7 +19,7 @@ type Device struct {
 	ID        string `json:"id"`
 	Name      string `json:"name"`
 	Brand     string `json:"brand"`
-	state     DeviceState
+	State     DeviceState
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -24,11 +29,15 @@ func NewDevice(id, name, brand string, state DeviceState, createdAt time.Time) (
 		createdAt = time.Now()
 	}
 
+	if id == "" {
+		id = uuid.New().String()
+	}
+
 	device := &Device{
 		ID:        id,
 		Name:      name,
 		Brand:     brand,
-		state:     state,
+		State:     state,
 		CreatedAt: createdAt,
 	}
 
@@ -41,9 +50,11 @@ func NewDevice(id, name, brand string, state DeviceState, createdAt time.Time) (
 
 func (d *Device) Validate() error {
 
-	if d.ID == "" {
-		return ErrIDIsRequired
+	_, err := uuid.Parse(d.ID)
+	if err != nil {
+		return ErrInvalidID
 	}
+
 	if d.Name == "" {
 		return ErrNameIsRequired
 	}
@@ -51,8 +62,8 @@ func (d *Device) Validate() error {
 		return ErrBrandIsRequired
 	}
 
-	if !d.state.IsValid() {
-		if d.state == "" {
+	if !d.State.IsValid() {
+		if d.State == "" {
 			return ErrStateIsRequired
 		}
 		return ErrInvalidState
@@ -65,7 +76,7 @@ func (d *Device) SetState(s DeviceState) error {
 	if !s.IsValid() {
 		return ErrInvalidState
 	}
-	d.state = s
+	d.State = s
 	return nil
 }
 
@@ -75,4 +86,15 @@ func (s DeviceState) IsValid() bool {
 		return true
 	}
 	return false
+}
+
+// DeviceRepository defines the interface that the Service layer will use
+type DeviceRepository interface {
+	CreateDevice(ctx context.Context, device *Device) error
+	UpdateDevice(ctx context.Context, device *Device) error
+	DeleteDevice(ctx context.Context, id string) error
+	GetDeviceById(ctx context.Context, id string) (*Device, error)
+	GetDevices(ctx context.Context) ([]Device, error)
+	GetDevicesByBrand(ctx context.Context, brand string) ([]Device, error)
+	GetDevicesByState(ctx context.Context, state string) ([]Device, error)
 }

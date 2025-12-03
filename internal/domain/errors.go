@@ -8,4 +8,5 @@ var (
 	ErrIDIsRequired    = errors.New("id is required")
 	ErrBrandIsRequired = errors.New("brand is required")
 	ErrNameIsRequired  = errors.New("name is required")
+	ErrInvalidID       = errors.New("invalid uuid")
 )
