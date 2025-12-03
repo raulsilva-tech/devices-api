@@ -94,10 +94,21 @@ func (suite *DeviceRepositoryTestSuite) TestGetAllByBrand() {
 	repo, _, err := createDevice(suite.ctx, suite.DB)
 	suite.NoError(err)
 
-	deviceList, err := repo.Queries.GetAllDevices(suite.ctx)
+	deviceList, err := repo.Queries.GetAllDevicesByBrand(suite.ctx, "Brand")
 	suite.NoError(err)
 	suite.NotEmpty(deviceList)
 	suite.Equal(len(deviceList), 1)
+}
+
+func (suite *DeviceRepositoryTestSuite) TestGetAllByBrand_WhenBrandNotFound() {
+
+	repo, _, err := createDevice(suite.ctx, suite.DB)
+	suite.NoError(err)
+
+	deviceList, err := repo.Queries.GetAllDevicesByBrand(suite.ctx, "not_found")
+	suite.NoError(err)
+	suite.Empty(deviceList)
+	suite.Equal(len(deviceList), 0)
 }
 
 func (suite *DeviceRepositoryTestSuite) TestGetAllByState() {
@@ -105,10 +116,21 @@ func (suite *DeviceRepositoryTestSuite) TestGetAllByState() {
 	repo, _, err := createDevice(suite.ctx, suite.DB)
 	suite.NoError(err)
 
-	deviceList, err := repo.Queries.GetAllDevices(suite.ctx)
+	deviceList, err := repo.Queries.GetAllDevicesByState(suite.ctx, string(domain.DeviceAvailable))
 	suite.NoError(err)
 	suite.NotEmpty(deviceList)
 	suite.Equal(len(deviceList), 1)
+}
+
+func (suite *DeviceRepositoryTestSuite) TestGetAllByState_WhenStateNotFound() {
+
+	repo, _, err := createDevice(suite.ctx, suite.DB)
+	suite.NoError(err)
+
+	deviceList, err := repo.Queries.GetAllDevicesByState(suite.ctx, "not_found")
+	suite.NoError(err)
+	suite.Empty(deviceList)
+	suite.Equal(len(deviceList), 0)
 }
 
 func createDevice(ctx context.Context, db *sql.DB) (*DeviceRepository, *domain.Device, error) {
