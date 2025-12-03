@@ -140,7 +140,7 @@ func createDevice(ctx context.Context, db *sql.DB) (*DeviceRepository, *domain.D
 	}
 
 	repo := NewDeviceRepository(db)
-	err = repo.CreateDevice(ctx, device)
+	_, err = repo.CreateDevice(ctx, device)
 	if err != nil {
 		return nil, nil, err
 	}

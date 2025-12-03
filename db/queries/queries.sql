@@ -12,9 +12,10 @@ WHERE state = $1;
 -- name: GetDeviceByID :one
 SELECT * FROM devices WHERE id = $1;
 
--- name: CreateDevice :exec
+-- name: CreateDevice :one
 INSERT INTO devices (id, name, brand, state, created_at)
-VALUES ($1, $2, $3, $4, $5);
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id;
 
 -- name: UpdateDevice :exec
 UPDATE devices

@@ -10,9 +10,10 @@ import (
 	"time"
 )
 
-const createDevice = `-- name: CreateDevice :exec
+const createDevice = `-- name: CreateDevice :one
 INSERT INTO devices (id, name, brand, state, created_at)
 VALUES ($1, $2, $3, $4, $5)
+RETURNING id
 `
 
 type CreateDeviceParams struct {
@@ -23,15 +24,17 @@ type CreateDeviceParams struct {
 	CreatedAt time.Time
 }
 
-func (q *Queries) CreateDevice(ctx context.Context, arg CreateDeviceParams) error {
-	_, err := q.db.ExecContext(ctx, createDevice,
+func (q *Queries) CreateDevice(ctx context.Context, arg CreateDeviceParams) (string, error) {
+	row := q.db.QueryRowContext(ctx, createDevice,
 		arg.ID,
 		arg.Name,
 		arg.Brand,
 		arg.State,
 		arg.CreatedAt,
 	)
-	return err
+	var id string
+	err := row.Scan(&id)
+	return id, err
 }
 
 const deleteDevice = `-- name: DeleteDevice :exec
