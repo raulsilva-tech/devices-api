@@ -1,0 +1,30 @@
+package middleware
+
+import (
+	"context"
+	"log"
+	"net/http"
+
+	"github.com/google/uuid"
+)
+
+type contextKey string
+
+const RequestIDKey contextKey = "requestID"
+
+func RequestID(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		id := r.Header.Get("X-Request-ID")
+		if id == "" {
+			id = uuid.New().String()
+		}
+
+		log.Println("Request id on RequestID middleware: ", id)
+		w.Header().Set("X-Request-ID", id)
+
+		ctx := context.WithValue(r.Context(), RequestIDKey, id)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}

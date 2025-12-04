@@ -3,12 +3,14 @@ package service
 import (
 	"context"
 	"database/sql"
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/raulsilva-tech/devices-api/internal/domain"
 )
+
+var ErrDeviceNotFound = errors.New("device not found")
 
 type DeviceService struct {
 	repo domain.DeviceRepository
@@ -68,7 +70,9 @@ func (s *DeviceService) UpdateDevice(ctx context.Context, input UpdateDeviceInpu
 	// getting device by id to check state
 	device, err := s.repo.GetDeviceById(ctx, input.ID)
 	if err != nil {
-		return nil, err
+		if err == sql.ErrNoRows {
+			return nil, ErrDeviceNotFound
+		}
 	}
 
 	if device.State != input.State && !input.State.IsValid() {
@@ -83,18 +87,18 @@ func (s *DeviceService) UpdateDevice(ctx context.Context, input UpdateDeviceInpu
 	// • Name and brand properties cannot be updated if the device is in use.
 	if device.State == domain.DeviceInUse {
 
-		// Only Name can change
-		if input.Name != device.Name {
-			device.Name = input.Name
-			output.UpdatedFields = append(output.UpdatedFields, "name")
+		// Only State can change
+		if input.State != device.State {
+			device.State = input.State
+			output.UpdatedFields = append(output.UpdatedFields, "state")
 		}
 
 		if input.Brand != device.Brand {
 			output.IgnoredFields = append(output.IgnoredFields, "brand")
 		}
 
-		if input.State != device.State {
-			output.IgnoredFields = append(output.IgnoredFields, "state")
+		if input.Name != device.Name {
+			output.IgnoredFields = append(output.IgnoredFields, "name")
 		}
 
 	} else {
@@ -136,7 +140,7 @@ func (s *DeviceService) DeleteDevice(ctx context.Context, id string) error {
 	device, err := s.repo.GetDeviceById(ctx, id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return fmt.Errorf("device id %s not found", id)
+			return ErrDeviceNotFound
 		}
 		return err
 	}
@@ -154,7 +158,7 @@ func (s *DeviceService) GetDeviceById(ctx context.Context, id string) (*DeviceOu
 	device, err := s.repo.GetDeviceById(ctx, id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("device id %s not found", id)
+			return nil, ErrDeviceNotFound
 		}
 		return nil, err
 	}

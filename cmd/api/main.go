@@ -52,10 +52,11 @@ func main() {
 	mux.HandleFunc("GET /devices/{id}", devHandler.GetDeviceByID)
 	mux.HandleFunc("GET /devices", devHandler.GetAllDevices)
 
-	handler := middleware.RequestID(mux)
+	var handler http.Handler = mux
 	handler = middleware.Logger(handler)
-	handler = middleware.Recover(handler)
+	handler = middleware.RequestID(handler)
 	handler = middleware.Timeout(10 * time.Second)(handler)
+	handler = middleware.Recover(handler)
 
 	server := http.Server{
 		Addr:    fmt.Sprintf(":%d", WebServerPort),
