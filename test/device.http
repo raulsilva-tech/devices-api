@@ -1,0 +1,39 @@
+### CREATE
+POST http://localhost:8081/devices HTTP/1.1
+Content-type: application/json
+
+{
+    "name": "device 4",
+    "brand": "brand 1",
+    "state": "in-use"
+}
+
+### UPDATE
+PUT http://localhost:8081/devices/68b02d20-b60e-480e-a237-b9b127f44fdf HTTP/1.1
+Content-type: application/json
+
+{
+    "name":"device 2",
+    "brand": "brand 1",
+    "state": "available"
+}
+
+### DELETE
+DELETE http://localhost:8081/devices/68b02d20-b60e-480e-a237-b9b127f44fdf HTTP/1.1
+
+
+### GET BY ID
+GET http://localhost:8081/devices/68b02d20-b60e-480e-a237-b9b127f44fdf HTTP/1.1
+Content-type: application/json
+
+### GET ALL
+GET http://localhost:8081/devices HTTP/1.1
+Content-type: application/json
+
+### GET ALL BY BRAND
+GET http://localhost:8081/devices?brand=brand%201 HTTP/1.1
+Content-type: application/json
+
+### GET ALL BY STATE
+GET http://localhost:8081/devices?state=available HTTP/1.1
+Content-type: application/json
