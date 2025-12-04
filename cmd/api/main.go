@@ -27,7 +27,7 @@ var (
 	DBDriver       = env.GetString("DB_DRIVER", "postgres")
 	DBUser         = env.GetString("DB_USER", "myuser")
 	DBPassword     = env.GetString("DB_PASSWORD", "mypassword")
-	DBHost         = env.GetString("DB_HOST", "localhost")
+	DBHost         = env.GetString("DB_HOST", "postgres") //dev environent: "localhost", container environment = must be container name = "postgres"
 	DBDatabaseName = env.GetString("DB_NAME", "devices-api")
 )
 

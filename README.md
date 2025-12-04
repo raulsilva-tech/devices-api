@@ -43,13 +43,14 @@ http://localhost:8080
 ### Build the image
 
 ```bash
-docker build -t devices-api .
+docker-compose up --build
+
 ```
 
 ### Run the container
 
 ```bash
-docker run -p 8080:8080 devices-api
+docker compose up
 ```
 
 ---
