@@ -25,7 +25,6 @@ func Logger(next http.Handler) http.Handler {
 		next.ServeHTTP(sw, r)
 
 		reqID := r.Context().Value(RequestIDKey)
-		log.Printf("RequestID in context: %v", r.Context().Value(RequestIDKey))
 
 		log.Printf("[%v] %s %s %d %v",
 			reqID,
@@ -36,5 +35,3 @@ func Logger(next http.Handler) http.Handler {
 		)
 	})
 }
-
-

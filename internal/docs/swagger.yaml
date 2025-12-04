@@ -1,0 +1,232 @@
+basePath: /
+definitions:
+  dto.CreateDeviceResponse:
+    description: Response containing the created device ID
+    properties:
+      id:
+        example: 49e6d977-58a6-4424-a058-8d025991b325
+        type: string
+    type: object
+  dto.DeviceRequest:
+    description: Device request payload
+    properties:
+      brand:
+        example: Apple
+        type: string
+      name:
+        example: iPhone 13 Pro Max
+        type: string
+      state:
+        example: available
+        type: string
+    type: object
+  dto.DeviceResponse:
+    description: Device full information
+    properties:
+      brand:
+        example: Samsung
+        type: string
+      created_at:
+        example: "2025-01-10T15:04:05Z"
+        type: string
+      id:
+        example: 49e6d977-58a6-4424-a058-8d025991b325
+        type: string
+      name:
+        example: Galaxy S21
+        type: string
+      state:
+        example: in-use
+        type: string
+    type: object
+  dto.ErrorResponse:
+    description: Error response container
+    properties:
+      error:
+        example: error description
+        type: string
+    type: object
+  dto.UpdateDeviceResponse:
+    description: Summary of updated/ignored fields and the updated device
+    properties:
+      device:
+        $ref: '#/definitions/dto.DeviceResponse'
+      ignored_fields:
+        example:
+        - '["state"]'
+        items:
+          type: string
+        type: array
+      updated_fields:
+        example:
+        - '["name"'
+        - ' "brand"]'
+        items:
+          type: string
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for managing devices
+  title: Devices API
+  version: "1.0"
+paths:
+  /devices:
+    get:
+      description: Returns all devices, or filter by brand/state query params
+      parameters:
+      - description: Filter by brand
+        in: query
+        name: brand
+        type: string
+      - description: Filter by state
+        in: query
+        name: state
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.DeviceResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: List devices
+      tags:
+      - Devices
+    post:
+      consumes:
+      - application/json
+      description: Creates a new device and returns its ID
+      parameters:
+      - description: Device payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeviceRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateDeviceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Create a new device
+      tags:
+      - Devices
+  /devices/{id}:
+    delete:
+      description: Delete a device by ID
+      parameters:
+      - description: Device ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete a device
+      tags:
+      - Devices
+    get:
+      parameters:
+      - description: Device ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.DeviceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get a device by ID
+      tags:
+      - Devices
+    put:
+      consumes:
+      - application/json
+      description: Update all fields of a device by ID
+      parameters:
+      - description: Device ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeviceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateDeviceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Update a device
+      tags:
+      - Devices
+swagger: "2.0"
