@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -20,7 +19,6 @@ func RequestID(next http.Handler) http.Handler {
 			id = uuid.New().String()
 		}
 
-		log.Println("Request id on RequestID middleware: ", id)
 		w.Header().Set("X-Request-ID", id)
 
 		ctx := context.WithValue(r.Context(), RequestIDKey, id)

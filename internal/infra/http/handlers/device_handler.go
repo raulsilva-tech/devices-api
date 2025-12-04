@@ -21,6 +21,17 @@ func NewDeviceHandler(svc *service.DeviceService) *DeviceHandler {
 	}
 }
 
+// CreateDevice godoc
+// @Summary Create a new device
+// @Description Creates a new device and returns its ID
+// @Tags Devices
+// @Accept json
+// @Produce json
+// @Param request body dto.DeviceRequest true "Device payload"
+// @Success 201 {object} dto.CreateDeviceResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /devices [post]
 func (h *DeviceHandler) CreateDevice(w http.ResponseWriter, r *http.Request) {
 
 	var reqBody dto.DeviceRequest
@@ -55,6 +66,19 @@ func (h *DeviceHandler) CreateDevice(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// UpdateDevice godoc
+// @Summary Update a device
+// @Description Update all fields of a device by ID
+// @Tags Devices
+// @Accept json
+// @Produce json
+// @Param id path string true "Device ID"
+// @Param request body dto.DeviceRequest true "Update payload"
+// @Success 200 {object} dto.UpdateDeviceResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /devices/{id} [put]
 func (h *DeviceHandler) UpdateDevice(w http.ResponseWriter, r *http.Request) {
 
 	id := r.PathValue("id")
@@ -106,6 +130,18 @@ func (h *DeviceHandler) UpdateDevice(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, response)
 }
 
+// DeleteDevice godoc
+// @Summary Delete a device
+// @Description Delete a device by ID
+// @Tags Devices
+// @Produce json
+// @Param id path string true "Device ID"
+// @Success 204 "No Content"
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 409 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /devices/{id} [delete]
 func (h *DeviceHandler) DeleteDevice(w http.ResponseWriter, r *http.Request) {
 
 	id := r.PathValue("id")
@@ -132,6 +168,16 @@ func (h *DeviceHandler) DeleteDevice(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// GetDeviceByID godoc
+// @Summary Get a device by ID
+// @Tags Devices
+// @Produce json
+// @Param id path string true "Device ID"
+// @Success 200 {object} dto.DeviceResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /devices/{id} [get]
 func (h *DeviceHandler) GetDeviceByID(w http.ResponseWriter, r *http.Request) {
 
 	id := r.PathValue("id")
@@ -153,6 +199,16 @@ func (h *DeviceHandler) GetDeviceByID(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, mapServiceDeviceToDTO(*device))
 }
 
+// GetAllDevices godoc
+// @Summary List devices
+// @Description Returns all devices, or filter by brand/state query params
+// @Tags Devices
+// @Produce json
+// @Param brand query string false "Filter by brand"
+// @Param state query string false "Filter by state"
+// @Success 200 {array} dto.DeviceResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /devices [get]
 func (h *DeviceHandler) GetAllDevices(w http.ResponseWriter, r *http.Request) {
 
 	brand := r.URL.Query().Get("brand")
@@ -209,7 +265,7 @@ func mapServiceDeviceToDTO(device service.DeviceOutput) dto.DeviceResponse {
 func writeJSONError(w http.ResponseWriter, status int, msg string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(map[string]string{"error": msg})
+	json.NewEncoder(w).Encode(dto.ErrorResponse{Error: msg})
 }
 
 func writeJSON(w http.ResponseWriter, status int, body interface{}) {

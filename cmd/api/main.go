@@ -12,15 +12,17 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	_ "github.com/raulsilva-tech/devices-api/internal/docs"
 	"github.com/raulsilva-tech/devices-api/internal/infra/db/repository"
 	"github.com/raulsilva-tech/devices-api/internal/infra/http/handlers"
 	"github.com/raulsilva-tech/devices-api/internal/infra/http/middleware"
 	"github.com/raulsilva-tech/devices-api/internal/service"
 	"github.com/raulsilva-tech/devices-api/shared/env"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 var (
-	WebServerPort  = env.GetInt("WEBSERVER_PORT", 8081)
+	WebServerPort  = env.GetInt("WEBSERVER_PORT", 8080)
 	DBPort         = env.GetInt("DB_PORT", 5432)
 	DBDriver       = env.GetString("DB_DRIVER", "postgres")
 	DBUser         = env.GetString("DB_USER", "myuser")
@@ -29,6 +31,11 @@ var (
 	DBDatabaseName = env.GetString("DB_NAME", "devices-api")
 )
 
+// @title Devices API
+// @version 1.0
+// @description API for managing devices
+// @host localhost:8080
+// @BasePath /
 func main() {
 
 	dbAddr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", DBHost, DBPort, DBUser, DBPassword, DBDatabaseName)
@@ -51,6 +58,9 @@ func main() {
 	mux.HandleFunc("DELETE /devices/{id}", devHandler.DeleteDevice)
 	mux.HandleFunc("GET /devices/{id}", devHandler.GetDeviceByID)
 	mux.HandleFunc("GET /devices", devHandler.GetAllDevices)
+
+	// swagger ui
+	mux.Handle("/swagger/", httpSwagger.WrapHandler)
 
 	var handler http.Handler = mux
 	handler = middleware.Logger(handler)
