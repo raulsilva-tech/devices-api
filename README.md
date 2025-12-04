@@ -66,7 +66,7 @@ docker run -p 8080:8080 devices-api
 {
   "name": "iPhone 14 Pro",
   "brand": "Apple",
-  "state": "active"
+  "state": "inactive"
 }
 ```
 
@@ -89,7 +89,7 @@ docker run -p 8080:8080 devices-api
 {
   "name": "Galaxy S22",
   "brand": "Samsung",
-  "state": "active"
+  "state": "in-use"
 }
 ```
 
@@ -103,7 +103,7 @@ docker run -p 8080:8080 devices-api
     "id": "3a298e4b-1f12-4060-aeb8-1ec54430ea67",
     "name": "Galaxy S22",
     "brand": "Samsung",
-    "state": "active",
+    "state": "in-use",
     "created_at": "2025-01-10T15:04:05Z"
   }
 }
@@ -129,7 +129,7 @@ docker run -p 8080:8080 devices-api
   "id": "3a298e4b-1f12-4060-aeb8-1ec54430ea67",
   "name": "iPhone 14 Pro",
   "brand": "Apple",
-  "state": "active",
+  "state": "inactive",
   "created_at": "2025-01-10T15:04:05Z"
 }
 ```
@@ -147,7 +147,7 @@ docker run -p 8080:8080 devices-api
     "id": "3a298e4b-1f12-4060-aeb8-1ec54430ea67",
     "name": "iPhone 12",
     "brand": "Apple",
-    "state": "active",
+    "state": "inactive",
     "created_at": "2025-01-10T15:04:05Z"
   }
 ]
@@ -159,10 +159,17 @@ docker run -p 8080:8080 devices-api
 **GET /devices?brand=Apple**
 
 ## Filter by state  
-**GET /devices?state=active**
+**GET /devices?state=in-use**
 
 ---
 
+# Swagger API Documentation
+
+To access and test the API endpoints:
+
+http://localhost:8080/swagger/index.html
+
+---
 # Middlewares Included
 
 - ✔ **Recover** — prevents server crashes on panic  
