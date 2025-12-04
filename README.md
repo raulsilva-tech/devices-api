@@ -14,7 +14,7 @@ The project follows best practices such as clean architecture, middleware-based 
 
 - **Go 1.22+**
 - Native `net/http` server
-- **Swagger / Swaggo** for API documentation
+- **Swagger** for API documentation
 - **UUID** for request ID generation
 - PostgreSQL
 
