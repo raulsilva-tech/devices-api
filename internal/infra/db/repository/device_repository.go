@@ -20,7 +20,7 @@ func NewDeviceRepository(dbConn *sql.DB) *DeviceRepository {
 	}
 }
 
-func (repo *DeviceRepository) CreateDevice(ctx context.Context, device *domain.Device) error {
+func (repo *DeviceRepository) CreateDevice(ctx context.Context, device *domain.Device) (string, error) {
 
 	return repo.Queries.CreateDevice(ctx, sqlc.CreateDeviceParams{
 		ID:        device.ID,

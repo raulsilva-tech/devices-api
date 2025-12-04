@@ -90,7 +90,7 @@ func (s DeviceState) IsValid() bool {
 
 // DeviceRepository defines the interface that the Service layer will use
 type DeviceRepository interface {
-	CreateDevice(ctx context.Context, device *Device) error
+	CreateDevice(ctx context.Context, device *Device) (string, error)
 	UpdateDevice(ctx context.Context, device *Device) error
 	DeleteDevice(ctx context.Context, id string) error
 	GetDeviceById(ctx context.Context, id string) (*Device, error)
